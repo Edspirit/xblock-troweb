@@ -1,0 +1,9 @@
+/* CSS for TrowebXBlock */
+
+.troweb_block {
+  margin: 20px 0;
+}
+
+.troweb_block p {
+  cursor: pointer;
+}

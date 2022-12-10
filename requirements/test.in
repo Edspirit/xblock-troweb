@@ -1,0 +1,7 @@
+mock==4.0.3
+Mako==1.2.4
+Django==3.2.16
+coverage==6.5.0
+xblock-sdk==0.5.1
+pycodestyle==2.10.0
+docutils==0.19
