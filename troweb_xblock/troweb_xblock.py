@@ -5,7 +5,7 @@ import requests
 from web_fragments.fragment import Fragment
 from xblock.core import XBlock
 from xblock.fields import Integer, Scope, String
-
+from jinja2 import Template
 
 class TrowebXBlock(XBlock):
     """
@@ -26,6 +26,11 @@ class TrowebXBlock(XBlock):
         """Handy helper for getting resources from our kit."""
         data = pkg_resources.resource_string(__name__, path)
         return data.decode("utf8")
+
+    def resource_filename(self, path):
+        """Handy helper for getting resources names from our kit."""
+        name = pkg_resources.resource_filename(__name__ , path)
+        return name
 
     def student_view(self, context=None):
         """
@@ -85,19 +90,6 @@ class TrowebXBlock(XBlock):
 
         return hostname, response["html"]
 
-    def studio_view(self, context):
-        """
-        Create a fragment used to display the edit view in the Studio.
-        """
-        html = self.resource_string("static/html/troweb_edit.html")
-        href = self.href or ''
-        frag = Fragment(html.format(self=self, href=href, maxwidth=self.maxwidth, maxheight=self.maxheight))
-
-        # Load JS
-        frag.add_javascript(self.resource_string("static/js/src/troweb_edit.js"))
-        frag.initialize_js("TrowebEditBlock")
-        return frag
-
     @XBlock.json_handler
     def studio_submit(self, data, suffix=''):
         """
@@ -108,6 +100,48 @@ class TrowebXBlock(XBlock):
         self.maxheight = data.get('maxheight')
 
         return {'result': 'success'}
+
+    def render_troweb_edit_html(self):
+        # res = requests.get('ac-endpoint' , headers = {})
+        # res = res.json()
+        res = [
+            {
+                "file_id":"111",
+                "pk":1,
+                "name":"salam.mp4",
+                "size":10,
+                "blob_type":"video",
+                "type":"app/pdf",
+                "uploaded":"2022"
+            },
+            {
+                "file_id":"222",
+                "pk":2,
+                "name":"by.jpg",
+                "size":20,
+                "blob_type":"image",
+                "type":"image/png",
+                "uploaded":"2023"
+            },
+        ]
+        dest_html_name = 'static/html/troweb_edit.html'
+        html_template = self.resource_string('templates/html/troweb_edit.template.html')
+        dest_html_abs_path = self.resource_filename(dest_html_name)
+        template = Template(html_template)
+        with open(dest_html_abs_path , 'w') as file:
+            file.write(template.render(res = res))
+        return self.resource_string(dest_html_name)
+
+    def studio_view(self, context):
+        """
+        Create a fragment used to display the edit view in the Studio.
+        """
+        rendered_html = self.render_troweb_edit_html()
+        frag = Fragment(rendered_html)
+        frag.add_css(self.resource_string("static/css/troweb.css"))
+        frag.add_javascript(self.resource_string("static/js/src/troweb_edit.js"))
+        frag.initialize_js("TrowebEditBlock")
+        return frag
 
     # workbench while developing your XBlock.
     @staticmethod

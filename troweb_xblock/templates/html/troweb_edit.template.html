@@ -13,47 +13,33 @@
                     <th class="sixth"></th>
                 </tr>
             </thead>
-            
-            <tr id="1">
-                <td class="first"><input type="radio" value="111" id="1-input" form="post-form"
+            {% for item in res %}
+            <tr id="{{item.pk}}">
+                <td class="first"><input type="radio" value="{{item.file_id}}" id="{{item.pk}}-input" form="post-form"
                         name="file_id">
                 </td>
                 <td class="second">
 
-                    
-                    <i class="icon fa fa-solid fa-video-camera"></i>
-                    
-
-                </td>
-                <td class="third">salam.mp4</td>
-                <td class="fourth">10</td>
-                <td class="fifth">2022</td>
-                <td class="sixth"><a href="#" id="delete-trowebitem" pk="1"><i
-                            class="icon fa fa-solid fa-trash"></i></a></i></td>
-            </tr>
-
-
-            
-            <tr id="2">
-                <td class="first"><input type="radio" value="222" id="2-input" form="post-form"
-                        name="file_id">
-                </td>
-                <td class="second">
-
-                    
+                    {% if item.blob_type == 'pdf' %}
+                    <i class="icon fa fa-solid fa-book"></i>
+                    {% elif item.blob_type == 'image' %}
                     <i class="icon fa fa-solid fa-image"></i>
-                    
+                    {% elif item.blob_type == 'video' %}
+                    <i class="icon fa fa-solid fa-video-camera"></i>
+                    {% else %}
+                    <i class="icon fa fa-solid fa-file"></i>
+                    {% endif %}
 
                 </td>
-                <td class="third">by.jpg</td>
-                <td class="fourth">20</td>
-                <td class="fifth">2023</td>
-                <td class="sixth"><a href="#" id="delete-trowebitem" pk="2"><i
+                <td class="third">{{item.name}}</td>
+                <td class="fourth">{{item.size}}</td>
+                <td class="fifth">{{item.uploaded}}</td>
+                <td class="sixth"><a href="#" id="delete-trowebitem" pk="{{item.pk}}"><i
                             class="icon fa fa-solid fa-trash"></i></a></i></td>
             </tr>
 
 
-            
+            {% endfor %}
             </tbody>
 
         </table>
